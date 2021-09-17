@@ -1,0 +1,108 @@
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.BinaryOperator;
+import java.util.stream.Collectors;
+
+class Employees{
+	private Integer empId;
+	private String empName;
+	private Integer empSalary;
+	private Integer empDept;
+	private String empStatus;
+	public Employees(Integer empId, String empName, Integer empSalary, Integer empDept, String empStatus) {
+		super();
+		this.empId = empId;
+		this.empName = empName;
+		this.empSalary = empSalary;
+		this.empDept = empDept;
+		this.empStatus = empStatus;
+	}
+	
+	@Override
+	public String toString() {
+		return "Employees [empId=" + empId + ", empName=" + empName + ", empSalary=" + empSalary + ", empDept="
+				+ empDept + ", empStatus=" + empStatus + "]";
+	}
+
+	public Integer getEmpId() {
+		return empId;
+	}
+	public void setEmpId(Integer empId) {
+		this.empId = empId;
+	}
+	public String getEmpName() {
+		return empName;
+	}
+	public void setEmpName(String empName) {
+		this.empName = empName;
+	}
+	public Integer getEmpSalary() {
+		return empSalary;
+	}
+	public void setEmpSalary(Integer empSalary) {
+		this.empSalary = empSalary;
+	}
+	public Integer getEmpDept() {
+		return empDept;
+	}
+	public void setEmpDept(Integer empDept) {
+		this.empDept = empDept;
+	}
+	public String getEmpStatus() {
+		return empStatus;
+	}
+	public void setEmpStatus(String empStatus) {
+		this.empStatus = empStatus;
+	}
+
+
+public class Java8InterviewProg {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		List<Employees> empList = new ArrayList<Employees>();
+		
+		empList.add(new Employees(101, "Sachin", 20000, 1001, "Active"));
+		empList.add(new Employees(102, "Vallabh", 80000, 1003, "Active"));
+		empList.add(new Employees(103, "Sowmya", 80000, 1002, "InActive"));
+		empList.add(new Employees(104, "Swathi", 40000, 1001, "Active"));
+		empList.add(new Employees(105, "Aarya", 20000, 1002, "InActive"));
+		empList.add(new Employees(106, "Pawan", 60000, 1004, "InActive"));
+		empList.add(new Employees(107, "Nivedha", 70000, 1001, "Active"));
+		empList.add(new Employees(108, "Keerthana", 80000, 1003, "Active"));
+		//1
+		Map<Integer, List<Employees>> deptGroupList = empList.stream().collect(Collectors.groupingBy(Employees::getEmpDept, Collectors.toList()));
+		
+		deptGroupList.entrySet().forEach(dept -> System.out.println(dept.getKey() + " " + dept.getValue()));
+		//2
+		Map<Integer, Long> countEmpInDeptwise = empList.stream().collect(Collectors.groupingBy(Employees::getEmpDept, Collectors.counting()));
+		
+		System.out.println(countEmpInDeptwise);
+		//3
+		Map<String, Long> statusCount = empList.stream().collect(Collectors.groupingBy(Employees::getEmpStatus, Collectors.counting()));
+		
+		System.out.println(statusCount);
+		
+		Long activeCount = empList.stream().filter(emp -> "Active".equalsIgnoreCase(emp.getEmpStatus())).count();
+		long inActiveCount = empList.stream().filter(emp -> "InActive".equalsIgnoreCase(emp.getEmpStatus())).count();
+		System.out.println("Active Conut-->"+activeCount);
+		System.out.println("InActive Conut-->"+inActiveCount);
+		//4
+		Optional<Employees> maxSal = empList.stream().max(Comparator.comparing(Employees::getEmpSalary));
+		Optional<Employees> minSal = empList.stream().min(Comparator.comparing(Employees::getEmpSalary));
+		System.out.println(maxSal);
+		System.out.println(minSal);
+		//5
+		Map<Integer, Optional<Employees>> topSalEmpDeptWise = empList.stream().collect(Collectors.groupingBy(Employees::getEmpDept,
+				Collectors.reducing(BinaryOperator.maxBy(Comparator.comparing(Employees::getEmpSalary)))));
+		System.out.println(topSalEmpDeptWise);
+		topSalEmpDeptWise.entrySet().forEach(top -> System.out.println(top.getKey()+"-->"+top.getValue()));
+		
+	}
+
+}
